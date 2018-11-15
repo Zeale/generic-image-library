@@ -12,16 +12,16 @@ public class Image {
 		image = new Color[length][width];
 	}
 
-	public Color getPixel(int x, int y) {
+	public final Color getPixel(int x, int y) {
 		return image[x][y];
 	}
 
-	public void setPixel(int x, int y, Color color) {
+	public final void setPixel(int x, int y, Color color) {
 		if (color == null)
 			throw new IllegalArgumentException("Can't set the color of a pixel to null.");
 	}
 
-	public void resize(int length, int height) {
+	public final void resize(int length, int height) {
 		// TODO Improve
 //		if (length > length()) {
 //			if (height > height()) {
@@ -34,7 +34,7 @@ public class Image {
 
 	}
 
-	public void shrinkLength(int amount) {
+	public final void shrinkLength(int amount) {
 		if (amount == 0)
 			return;
 		if (amount < 0)
@@ -43,7 +43,7 @@ public class Image {
 			image = Arrays.copyOf(image, image.length - amount);
 	}
 
-	public void shrinkHeight(int amount) {
+	public final void shrinkHeight(int amount) {
 		if (amount == 0)
 			return;
 		if (amount < 0)
@@ -55,15 +55,15 @@ public class Image {
 																		// safely.
 	}
 
-	public int height() {
+	public final int height() {
 		return image.length > 0 ? image[0].length : -1;
 	}
 
-	public int length() {
+	public final int length() {
 		return image.length;
 	}
 
-	public void expandLength(int amount) {
+	public final void expandLength(int amount) {
 		if (amount == 0)
 			return;
 		else if (amount < 0)
@@ -77,7 +77,7 @@ public class Image {
 		}
 	}
 
-	public void expandHeight(int amount) {
+	public final void expandHeight(int amount) {
 		if (amount == 0)
 			return;
 		else if (amount < 0)
@@ -91,11 +91,11 @@ public class Image {
 		}
 	}
 
-	public void resizeLength(int length) {
+	public final void resizeLength(int length) {
 		expandLength(length - length());
 	}
 
-	public void resizeHeight(int height) {
+	public final void resizeHeight(int height) {
 		expandHeight(height - height());
 	}
 }
