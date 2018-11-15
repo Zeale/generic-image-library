@@ -1,6 +1,8 @@
 package org.alixia.gil;
 
 import java.util.Arrays;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 public class Image {
 
@@ -89,6 +91,91 @@ public class Image {
 					;
 			}
 		}
+	}
+
+	public final class PixelData {
+		public final int x, y;
+
+		public PixelData(int x, int y) {
+			this.x = x;
+			this.y = y;
+		}
+
+		public Color color() {
+			return getPixel(x, y);
+		}
+
+		public Color up(int distance) {
+			int pos = y - distance;
+			return pos < 0 || pos >= image.length ? null : image[x][pos];
+		}
+
+		public Color down(int distance) {
+			int pos = y + distance;
+			return pos < 0 || pos >= image.length ? null : image[x][pos];
+		}
+
+		public Color left(int distance) {
+			int pos = x - distance;
+			return pos < 0 || pos >= height() ? null : image[pos][y];
+		}
+
+		public Color right(int distance) {
+			int pos = x + distance;
+			return pos < 0 || pos >= height() ? null : image[pos][y];
+		}
+
+		public Color up() {
+			return up(1);
+		}
+
+		public Color down() {
+			return down(1);
+		}
+
+		public Color left() {
+			return left(1);
+		}
+
+		public Color right() {
+			return right(1);
+		}
+
+	}
+
+	public final void apply(Function<PixelData, Color> effect) {
+		for (int i = 0; i < image.length; i++)
+			for (int j = 0; j < height(); effect.apply(new PixelData(i, j++)))
+				;
+	}
+
+	/**
+	 * <p>
+	 * A new 2-D {@link Color} array is created, and the {@link Color} in this
+	 * {@link Image}'s backing array are copied over.
+	 * </p>
+	 * <p>
+	 * Modifying the value returned by this method will not modify this object.
+	 * </p>
+	 * 
+	 * @return A clone of the 2-D array of {@link Color}s that backs this
+	 *         {@link Image}.
+	 */
+	public Color[][] colorMatrix() {
+		Color[][] arr = new Color[image.length][height()];
+		for (int i = 0; i < image.length; i++)
+			for (int j = 0; j < image.length; arr[i][j] = image[i][j++])
+				;
+		return arr;
+	}
+
+	private Image(Color[][] arr) {
+		image = arr;
+	}
+
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		return new Image(colorMatrix());
 	}
 
 	public final void resizeLength(int length) {
