@@ -155,6 +155,10 @@ public class Image {
 			return y >= 0 && y < height();
 		}
 
+		public Color relative(int xshift, int yshift) {
+			return inLengthBounds(x + xshift) && inHeightBounds(y + yshift) ? image[x][y] : null;
+		}
+
 	}
 
 	public void setColor(Color color) {
@@ -167,8 +171,11 @@ public class Image {
 	public final void apply(Function<PixelData, Color> effect) {
 		int height = height();
 		for (int i = 0; i < image.length; i++)
-			for (int j = 0; j < height; effect.apply(new PixelData(i, j++)))
-				;
+			for (int j = 0; j < height; j++) {
+				Color result = effect.apply(new PixelData(i, j));
+				if (result != null)
+					image[i][j] = result;
+			}
 	}
 
 	public WritableImage toJavaFXImage() {
