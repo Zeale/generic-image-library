@@ -1,8 +1,11 @@
 package org.alixia.gil;
 
+import java.awt.image.BufferedImage;
 import java.util.Arrays;
-import java.util.function.BiFunction;
 import java.util.function.Function;
+
+import javafx.scene.image.PixelWriter;
+import javafx.scene.image.WritableImage;
 
 public class Image {
 
@@ -50,11 +53,11 @@ public class Image {
 			return;
 		if (amount < 0)
 			expandHeight(-amount);
-		else
+		else {
+			int height = height();
 			for (int i = 0; i < image.length; i++)
-				image[i] = Arrays.copyOf(image[i], height() - amount);// Throws NegativeArraySizeException on first
-																		// iteration if there's an issue. This fails
-																		// safely.
+				image[i] = Arrays.copyOf(image[i], height - amount);
+		}
 	}
 
 	public final int height() {
@@ -84,13 +87,11 @@ public class Image {
 			return;
 		else if (amount < 0)
 			shrinkHeight(amount);
-		else {
-			for (int i = 0; i < image.length; i++) {
+		else
+			for (int i = 0; i < image.length; i++)
 				for (int j = (image[i] = Arrays.copyOf(image[i], height() + amount)).length
 						- amount; j < image[i].length; image[i][j++] = defaultColor)
 					;
-			}
-		}
 	}
 
 	public final class PixelData {
@@ -143,10 +144,37 @@ public class Image {
 
 	}
 
-	public final void apply(Function<PixelData, Color> effect) {
+	public void setColor(Color color) {
+		int height = height();
 		for (int i = 0; i < image.length; i++)
-			for (int j = 0; j < height(); effect.apply(new PixelData(i, j++)))
+			for (int j = 0; j < height; image[i][j++] = color)
 				;
+	}
+
+	public final void apply(Function<PixelData, Color> effect) {
+		int height = height();
+		for (int i = 0; i < image.length; i++)
+			for (int j = 0; j < height; effect.apply(new PixelData(i, j++)))
+				;
+	}
+
+	public WritableImage toJavaFXImage() {
+		int height = height();
+		WritableImage img = new WritableImage(length(), height);
+		PixelWriter writer = img.getPixelWriter();
+		for (int i = 0; i < image.length; i++)
+			for (int j = 0; j < height; j++)
+				writer.setColor(i, j, image[i][j].toJavaFXColor());
+		return img;
+	}
+
+	public BufferedImage toAWTImage() {
+		int height = height();
+		BufferedImage img = new BufferedImage(image.length, height, BufferedImage.TYPE_INT_ARGB);
+		for (int i = 0; i < image.length; i++)
+			for (int j = 0; j < height; img.setRGB(i, j, image[i][j++].toAWTColor().getRGB()))
+				;
+		return img;
 	}
 
 	/**
