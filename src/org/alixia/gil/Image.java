@@ -13,6 +13,10 @@ public class Image {
 
 	private Color defaultColor = Color.TRANSPARENT;
 
+	public void setDefaultColor(Color defaultColor) {
+		this.defaultColor = defaultColor;
+	}
+
 	public Image(int length, int width) {
 		image = new Color[length][width];
 	}
@@ -24,6 +28,7 @@ public class Image {
 	public final void setPixel(int x, int y, Color color) {
 		if (color == null)
 			throw new IllegalArgumentException("Can't set the color of a pixel to null.");
+		image[x][y] = color;
 	}
 
 	public final void resize(int length, int height) {
@@ -108,22 +113,22 @@ public class Image {
 
 		public Color up(int distance) {
 			int pos = y - distance;
-			return pos < 0 || pos >= image.length ? null : image[x][pos];
+			return inHeightBounds(pos) ? null : image[x][pos];
 		}
 
 		public Color down(int distance) {
 			int pos = y + distance;
-			return pos < 0 || pos >= image.length ? null : image[x][pos];
+			return inHeightBounds(pos) ? null : image[x][pos];
 		}
 
 		public Color left(int distance) {
 			int pos = x - distance;
-			return pos < 0 || pos >= height() ? null : image[pos][y];
+			return inLengthBounds(pos) ? null : image[pos][y];
 		}
 
 		public Color right(int distance) {
 			int pos = x + distance;
-			return pos < 0 || pos >= height() ? null : image[pos][y];
+			return inLengthBounds(pos) ? null : image[pos][y];
 		}
 
 		public Color up() {
@@ -140,6 +145,14 @@ public class Image {
 
 		public Color right() {
 			return right(1);
+		}
+
+		public boolean inLengthBounds(int x) {
+			return x >= 0 && x < length();
+		}
+
+		public boolean inHeightBounds(int y) {
+			return y >= 0 && y < height();
 		}
 
 	}
