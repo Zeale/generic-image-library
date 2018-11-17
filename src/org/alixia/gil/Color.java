@@ -13,6 +13,14 @@ public class Color {
 		this.opacity = opacity;
 	}
 
+	public Color(javafx.scene.paint.Color color) {
+		this(color.getRed() * 255, color.getGreen() * 255, color.getBlue() * 255, color.getOpacity() * 255);
+	}
+
+	public Color(java.awt.Color color) {
+		this(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
+	}
+
 	public Color(double red, double green, double blue) {
 		this(red, green, blue, 1);
 	}

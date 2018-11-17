@@ -6,6 +6,7 @@ import java.util.function.Function;
 
 import org.alixia.gil.effects.ImageEffect;
 
+import javafx.scene.image.PixelReader;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 
@@ -197,6 +198,23 @@ public class Image {
 				writer.setColor(i, j, image[i][j].toJavaFXColor());
 		return img;
 	}
+
+	public Image(javafx.scene.image.Image img) {
+		this((int) img.getWidth(), (int) img.getHeight());
+		PixelReader reader = img.getPixelReader();
+		for (int i = 0; i < image.length; i++)
+			for (int j = 0; j < img.getHeight(); j++)
+				image[i][j] = new Color(reader.getColor(i, j));
+	}
+
+//	public Image(java.awt.Image img) {
+//		this(img.getWidth(null), img.getHeight(null));
+//		int height = height();
+//		for(int i = 0;i<image.length;i++)
+//			for(int j = 0;j<height;j++) {
+//				color[i][j]=new Color(img.)
+//			}
+//	}
 
 	public BufferedImage toAWTImage() {
 		int height = height();
