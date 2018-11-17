@@ -4,6 +4,8 @@ import java.awt.image.BufferedImage;
 import java.util.Arrays;
 import java.util.function.Function;
 
+import org.alixia.gil.effects.ImageEffect;
+
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 
@@ -32,7 +34,7 @@ public class Image {
 	}
 
 	public final void resize(int length, int height) {
-		// TODO Improve
+//		TODO Improve
 //		if (length > length()) {
 //			if (height > height()) {
 //				
@@ -99,6 +101,10 @@ public class Image {
 					;
 	}
 
+	public final void apply(ImageEffect effect) {
+		effect.apply(this);
+	}
+
 	public final class PixelData {
 		public final int x, y;
 
@@ -107,55 +113,59 @@ public class Image {
 			this.y = y;
 		}
 
-		public Color color() {
+		public final Image image() {
+			return Image.this;
+		}
+
+		public final Color color() {
 			return getPixel(x, y);
 		}
 
-		public Color up(int distance) {
+		public final Color up(int distance) {
 			int pos = y - distance;
 			return inHeightBounds(pos) ? null : image[x][pos];
 		}
 
-		public Color down(int distance) {
+		public final Color down(int distance) {
 			int pos = y + distance;
 			return inHeightBounds(pos) ? null : image[x][pos];
 		}
 
-		public Color left(int distance) {
+		public final Color left(int distance) {
 			int pos = x - distance;
 			return inLengthBounds(pos) ? null : image[pos][y];
 		}
 
-		public Color right(int distance) {
+		public final Color right(int distance) {
 			int pos = x + distance;
 			return inLengthBounds(pos) ? null : image[pos][y];
 		}
 
-		public Color up() {
+		public final Color up() {
 			return up(1);
 		}
 
-		public Color down() {
+		public final Color down() {
 			return down(1);
 		}
 
-		public Color left() {
+		public final Color left() {
 			return left(1);
 		}
 
-		public Color right() {
+		public final Color right() {
 			return right(1);
 		}
 
-		public boolean inLengthBounds(int x) {
+		public final boolean inLengthBounds(int x) {
 			return x >= 0 && x < length();
 		}
 
-		public boolean inHeightBounds(int y) {
+		public final boolean inHeightBounds(int y) {
 			return y >= 0 && y < height();
 		}
 
-		public Color relative(int xshift, int yshift) {
+		public final Color relative(int xshift, int yshift) {
 			return inLengthBounds(x + xshift) && inHeightBounds(y + yshift) ? image[x][y] : null;
 		}
 
